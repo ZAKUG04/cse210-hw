@@ -35,8 +35,6 @@ class Program
         {
             Console.Clear();
             Console.WriteLine(current.GetTextDisplay());
-
-            // NEW: Show how many words still visible
             int visibleCount = current.VisibleWordsCount();
             Console.WriteLine($"\nWords still visible: {visibleCount}");
 
@@ -56,7 +54,7 @@ class Program
             Console.Clear();
             Console.WriteLine(current.GetTextDisplay());
 
-            // NEW: Motivational message based on scripture
+            
             string finishMsg = current.GetReferenceName().Contains("John") ?
                             "Congratulation! You memorized John passage!" :
                             "Great job! Scripture is all hide now!";
