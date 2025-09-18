@@ -1,23 +1,66 @@
+/*
+Personal improv:
+- User choose how many words hide each round
+- Some messages not perfect grammar
+- Keeps same logic as normal
+*/
+
 using System;
+using System.Collections.Generic;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Fraction f1 = new Fraction();
-        Console.WriteLine(f1.GetFractionString());
-        Console.WriteLine(f1.GetDecimalValue());
+        Random rand = new Random();
 
-        Fraction f2 = new Fraction(5);
-        Console.WriteLine(f2.GetFractionString());
-        Console.WriteLine(f2.GetDecimalValue());
+        var scriptures = new List<Scripture>
+        {
+            new Scripture(new Reference("John", 3, 16),
+                "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."),
+            new Scripture(new Reference("Proverbs", 3, 5, 6),
+                "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.")
+        };
 
-        Fraction f3 = new Fraction(3, 4);
-        Console.WriteLine(f3.GetFractionString());
-        Console.WriteLine(f3.GetDecimalValue());
+        Scripture current = scriptures[rand.Next(scriptures.Count)];
 
-        Fraction f4 = new Fraction(1, 3);
-        Console.WriteLine(f4.GetFractionString());
-        Console.WriteLine(f4.GetDecimalValue());
+        Console.Write("How many word to hide per turn? ");
+        int hideCount;
+        if (!int.TryParse(Console.ReadLine(), out hideCount) || hideCount < 1)
+        {
+            hideCount = 2; // default
+        }
+
+        while (!current.AreAllWordsHidden())
+        {
+            Console.Clear();
+            Console.WriteLine(current.GetTextDisplay());
+
+            // NEW: Show how many words still visible
+            int visibleCount = current.VisibleWordsCount();
+            Console.WriteLine($"\nWords still visible: {visibleCount}");
+
+            Console.WriteLine("\nPress Enter for hide words or type 'quit'.");
+            string user = Console.ReadLine();
+            if (user.Trim().ToLower() == "quit")
+            {
+                Console.WriteLine("Program finished by user.");
+                break;
+            }
+
+            current.HideRandomWords(hideCount);
+        }
+
+        if (current.AreAllWordsHidden())
+        {
+            Console.Clear();
+            Console.WriteLine(current.GetTextDisplay());
+
+            // NEW: Motivational message based on scripture
+            string finishMsg = current.GetReferenceName().Contains("John") ?
+                            "Congratulation! You memorized John passage!" :
+                            "Great job! Scripture is all hide now!";
+            Console.WriteLine("\n" + finishMsg);
+        }
     }
 }
